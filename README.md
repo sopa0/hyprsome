@@ -28,8 +28,11 @@ Most noteworthy thing here is the 'workspace' keyword that I use to bind a defau
 Then you can bind workspaces to your different monitors.
 
 It is very important that you bind your workspaces in order.
+
 Check the results of `hyprctl monitors`. Bind workspaces from 1 to 9 on your monitor that has 0 as an id.
+
 Then just bind workspaces by prefixing numbers by the id of the monitor they're bound to.
+
 Here, HDMI-A-1's id is 1, so I bind workspaces from 11 to 19 to it.
 
 ```
@@ -65,6 +68,9 @@ bind=SUPERSHIFT,5,exec,hyprsome move 5
 
 # Limitations
 This is alpha software and my first program in Rust, bugs are bound to happen but nothing that will break your system.
+
 Some features are most likely missing.
+
 You can only have 9 workspaces per monitor as of now.
+
 I haven't worked on supporting monitor hot-plug at all. It may work but it's unlikely.
