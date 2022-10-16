@@ -1,5 +1,7 @@
 [package]
 name = "hyprsome"
+description = "A small CLI apps that allows to make Hyprland's workspaces work like Awesome in multi-monitor setup"
+license = "GPLv3"
 version = "0.1.0"
 edition = "2021"
 

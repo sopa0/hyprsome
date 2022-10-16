@@ -84,7 +84,7 @@ pub struct HyprlandOption {
     pub str: String,
 }
 
-pub fn send_message(action: &str, args: Vec<&str>) -> String {
+fn send_message(action: &str, args: Vec<&str>) -> String {
     let env_var_name = "HYPRLAND_INSTANCE_SIGNATURE";
 
     let hyprland_instance_sig = match env::var(env_var_name) {
