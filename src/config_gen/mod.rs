@@ -74,7 +74,7 @@ bind=SUPER,{{this}},exec,hyprsome workspace {{this}}
 {{/each}}
 
 {{#each ws_numbers}}
-bind=SUPER,{{this}},exec,hyprsome move {{this}}
+bind=SUPERSHIFT,{{this}},exec,hyprsome move {{this}}
 {{/each}}
 
 {{#each monitor_workspaces}}
