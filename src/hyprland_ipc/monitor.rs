@@ -49,7 +49,6 @@ pub fn get_by_id(id: u64) -> Monitor {
 
 pub fn get() -> Vec<Monitor> {
     let response = super::send_message(MONITORS, vec![]);
-    println!("{:?}", response);
     let monitors: Vec<Monitor> = serde_json::from_str(&response).unwrap();
 
     return monitors;
