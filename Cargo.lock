@@ -275,7 +275,7 @@ dependencies = [
 
 [[package]]
 name = "hyprsome"
-version = "0.1.3"
+version = "0.1.5"
 dependencies = [
  "clap",
  "ipc-rpc",
