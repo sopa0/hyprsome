@@ -26,7 +26,6 @@ fn send_message(action: &str, args: Vec<&str>) -> String {
     let mut message = format!("j/{}", action).to_owned();
     args.into_iter()
         .for_each(|a| message.push_str(&format!(" {}", a)));
-    println!("{}", message);
 
     // TODO: stop being stinky and manage errors
     let _ = stream.write_all(message.as_bytes());

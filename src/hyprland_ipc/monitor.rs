@@ -1,7 +1,5 @@
 use serde::{Serialize, Deserialize};
 
-use super::client::Client;
-
 const MONITORS: &str = "monitors";
 const DISPATCH: &str = "dispatch";
 const FOCUSMONITOR: &str = "focusmonitor";
@@ -16,12 +14,18 @@ pub struct Monitor {
     pub height: u64,
     pub x: u64,
     pub y: u64,
-    pub active_workspace: Client,
+    pub active_workspace: ActiveWorkspace,
     pub reserved: [u64; 4],
     pub scale: f64,
     pub transform: u64,
     pub focused: bool,
     pub dpms_status: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ActiveWorkspace {
+    pub id: u64,
+    pub name: String,
 }
 
 impl Monitor {
@@ -45,6 +49,7 @@ pub fn get_by_id(id: u64) -> Monitor {
 
 pub fn get() -> Vec<Monitor> {
     let response = super::send_message(MONITORS, vec![]);
+    println!("{:?}", response);
     let monitors: Vec<Monitor> = serde_json::from_str(&response).unwrap();
 
     return monitors;
