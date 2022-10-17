@@ -9,6 +9,8 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.0.15", features = ["derive"] }
+dirs = "4.0.0"
+handlebars = "4.3.5"
 ipc-rpc = "1.2.2"
 schemars = "0.8.11"
 serde = "1.0.145"

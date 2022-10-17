@@ -1,6 +1,9 @@
 use clap::{Parser, Subcommand, ValueEnum};
 
 mod hyprland_ipc;
+mod config_gen;
+
+use config_gen::generate_hyprsome_config;
 use hyprland_ipc::{client, monitor, option, workspace};
 
 #[derive(Parser)]
@@ -18,6 +21,7 @@ enum Commands {
     Focus { direction: Directions },
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
+    GenerateConfig,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -268,6 +272,9 @@ fn main() {
         }
         Commands::Move { workspace_number } => {
             send_to_workspace(workspace_number);
+        }
+        Commands::GenerateConfig {} => {
+            generate_hyprsome_config();
         }
     }
 }
