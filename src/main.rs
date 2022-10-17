@@ -1,10 +1,7 @@
 use clap::{Parser, Subcommand, ValueEnum};
 
 mod hyprland_ipc;
-use hyprland_ipc::{
-    focus_mon, focus_next_mon, focus_prev_mon, focus_workspace, get_active_window, get_clients,
-    get_gaps, get_monitor_by_id, get_monitors, move_focus, move_to_workspace, Client, Monitor,
-};
+use hyprland_ipc::{client, monitor, option, workspace};
 
 #[derive(Parser)]
 #[command(name = "Hyprsome")]
@@ -29,8 +26,8 @@ enum Directions {
     R,
 }
 
-pub fn get_current_monitor() -> Monitor {
-    return get_monitors()
+pub fn get_current_monitor() -> monitor::Monitor {
+    return monitor::get()
         .into_iter()
         .find(|m| m.focused == true)
         .unwrap();
@@ -39,9 +36,9 @@ pub fn get_current_monitor() -> Monitor {
 pub fn select_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
     match mon.id {
-        0 => focus_workspace(workspace_number),
+        0 => workspace::focus(workspace_number),
         _ => {
-            focus_workspace(
+            workspace::focus(
                 &format!("{}{}", mon.id, workspace_number)
                     .parse::<u64>()
                     .unwrap(),
@@ -53,9 +50,9 @@ pub fn select_workspace(workspace_number: &u64) {
 pub fn send_to_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
     match mon.id {
-        0 => move_to_workspace(workspace_number),
+        0 => workspace::move_to(workspace_number),
         _ => {
-            move_to_workspace(
+            workspace::move_to(
                 &format!("{}{}", mon.id, workspace_number)
                     .parse::<u64>()
                     .unwrap(),
@@ -64,8 +61,8 @@ pub fn send_to_workspace(workspace_number: &u64) {
     }
 }
 
-pub fn get_leftmost_client_for_monitor(mon_id: u64) -> Client {
-    let clients = get_clients();
+pub fn get_leftmost_client_for_monitor(mon_id: u64) -> client::Client {
+    let clients = client::get();
 
     return clients
         .into_iter()
@@ -74,46 +71,46 @@ pub fn get_leftmost_client_for_monitor(mon_id: u64) -> Client {
         .unwrap();
 }
 
-pub fn focus_left(aw: Client) {
-    let mon = get_monitor_by_id(aw.monitor);
+pub fn focus_left(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
 
     if is_leftmost_monitor(&mon) && is_leftmost(&aw, &mon) {
-        focus_mon("1");
+        monitor::focus_by_id("1");
 
         return;
     }
 
     if is_leftmost(&aw, &mon) {
-        focus_prev_mon();
+        monitor::focus_prev();
 
         return;
     }
 
-    move_focus("l");
+    client::focus_by_direction("l");
 }
 
-pub fn focus_right(aw: Client) {
-    let mon = get_monitor_by_id(aw.monitor);
+pub fn focus_right(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
 
     if is_rightmost_monitor(&mon) && is_rightmost(&aw, &mon) {
-        focus_mon("0");
+        monitor::focus_by_id("0");
 
         return;
     }
 
     if is_rightmost(&aw, &mon) {
-        focus_next_mon();
+        monitor::focus_next();
 
         return;
     }
 
-    move_focus("r");
+    client::focus_by_direction("r");
 
     return;
 }
 
-pub fn is_leftmost(aw: &Client, mon: &Monitor) -> bool {
-    let gaps = get_gaps();
+pub fn is_leftmost(aw: &client::Client, mon: &monitor::Monitor) -> bool {
+    let gaps = option::get_gaps();
 
     if aw.at[0] - gaps == mon.x {
         return true;
@@ -122,8 +119,8 @@ pub fn is_leftmost(aw: &Client, mon: &Monitor) -> bool {
     return false;
 }
 
-pub fn is_rightmost(aw: &Client, mon: &Monitor) -> bool {
-    let gaps = get_gaps();
+pub fn is_rightmost(aw: &client::Client, mon: &monitor::Monitor) -> bool {
+    let gaps = option::get_gaps();
 
     if mon.real_width() + mon.x - gaps == aw.size[0] + aw.at[0] {
         return true;
@@ -132,8 +129,8 @@ pub fn is_rightmost(aw: &Client, mon: &Monitor) -> bool {
     return false;
 }
 
-pub fn is_rightmost_monitor(mon: &Monitor) -> bool {
-    let monitors = get_monitors();
+pub fn is_rightmost_monitor(mon: &monitor::Monitor) -> bool {
+    let monitors = monitor::get();
     let max = monitors.into_iter().max_by_key(|m| m.x).unwrap();
     if max.x == mon.x {
         return true;
@@ -141,8 +138,8 @@ pub fn is_rightmost_monitor(mon: &Monitor) -> bool {
     return false;
 }
 
-pub fn is_leftmost_monitor(mon: &Monitor) -> bool {
-    let monitors = get_monitors();
+pub fn is_leftmost_monitor(mon: &monitor::Monitor) -> bool {
+    let monitors = monitor::get();
     let min = monitors.into_iter().min_by_key(|m| m.x).unwrap();
     if min.x == mon.x {
         return true;
@@ -155,19 +152,19 @@ fn main() {
     match &cli.command {
         Commands::Focus { direction } => match direction {
             Directions::L => {
-                let aw_res = get_active_window();
+                let aw_res = client::get_active();
 
                 match aw_res {
                     Ok(aw) => focus_left(aw),
-                    Err(_e) => focus_prev_mon(),
+                    Err(_e) => monitor::focus_prev(),
                 };
             }
             Directions::R => {
-                let aw_res = get_active_window();
+                let aw_res = client::get_active();
 
                 match aw_res {
                     Ok(aw) => focus_right(aw),
-                    Err(_e) => focus_next_mon(),
+                    Err(_e) => monitor::focus_next(),
                 };
             }
         },
