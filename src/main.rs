@@ -4,9 +4,9 @@ mod hyprland_ipc;
 use hyprland_ipc::{client, monitor, option, workspace};
 
 #[derive(Parser)]
-#[command(name = "Hyprsome")]
+#[command(name = "hyprsome")]
 #[command(author = "sopa")]
-#[command(version = "0.1.5")]
+#[command(version = "0.1.6")]
 #[command(about = "Makes hyprland workspaces behave like awesome", long_about = None)]
 struct Cli {
     #[command(subcommand)]
