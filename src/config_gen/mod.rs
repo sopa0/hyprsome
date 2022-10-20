@@ -44,14 +44,8 @@ pub fn generate_hyprsome_config() {
         ws_numbers,
     };
 
-
-    let mut relative_config_path = PathBuf::new();
-    relative_config_path.push("hypr");
-    relative_config_path.push("hyprsome");
-    relative_config_path.set_extension("conf");
-
+    let mut relative_config_path = PathBuf::from("hypr/hyprsome.conf");
     let xdg_config_home = config_dir().unwrap();
-    
     let mut absolute_config_path = xdg_config_home;
     absolute_config_path.push(relative_config_path);
 
