@@ -64,10 +64,10 @@ bind=SUPERSHIFT,3,exec,hyprsome move 3
 bind=SUPERSHIFT,4,exec,hyprsome move 4
 bind=SUPERSHIFT,5,exec,hyprsome move 5
 
-bind=SUPER,>,exec,hyprsome focus r
-bind=SUPER,<,exec,hyprsome focus l
-bind=SUPERSHIFT,>,exec,hyprsome tagmon r
-bind=SUPERSHIFT,<,exec,hyprsome tagmon l
+bind=SUPER,period,exec,hyprsome focus r
+bind=SUPER,comma,exec,hyprsome focus l
+bind=SUPERSHIFT,period,exec,hyprsome tagmon r
+bind=SUPERSHIFT,comma,exec,hyprsome tagmon l
 ```
 
 # Limitations
