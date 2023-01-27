@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use super::workspace;
+
 const MONITORS: &str = "monitors";
 const DISPATCH: &str = "dispatch";
 const FOCUSMONITOR: &str = "focusmonitor";
@@ -79,4 +81,10 @@ pub fn focus_down() {
 
 pub fn focus_by_id(id: &str) {
     let _ = super::send_message(DISPATCH, vec![FOCUSMONITOR, id]);
+}
+
+pub fn tagmon_to(id: u64) {
+    let mon = get_by_id(id);
+
+    workspace::move_to(&mon.active_workspace.id);
 }
