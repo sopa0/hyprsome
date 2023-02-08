@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 const MONITORS: &str = "monitors";
 const DISPATCH: &str = "dispatch";
@@ -36,6 +36,13 @@ impl Monitor {
             _ => self.width as f64,
         } as u64;
     }
+    pub fn real_height(&self) -> u64 {
+        return match self.transform {
+            0 | 2 | 4 | 6 => self.height as f64 / self.scale,
+            1 | 3 | 5 => self.width as f64 / self.scale,
+            _ => self.height as f64,
+        } as u64;
+    }
 }
 
 pub fn get_by_id(id: u64) -> Monitor {
@@ -54,12 +61,20 @@ pub fn get() -> Vec<Monitor> {
     return monitors;
 }
 
-pub fn focus_prev() {
+pub fn focus_left() {
     let _ = super::send_message(DISPATCH, vec![FOCUSMONITOR, "l"]);
 }
 
-pub fn focus_next() {
+pub fn focus_right() {
     let _ = super::send_message(DISPATCH, vec![FOCUSMONITOR, "r"]);
+}
+
+pub fn focus_up() {
+    let _ = super::send_message(DISPATCH, vec![FOCUSMONITOR, "u"]);
+}
+
+pub fn focus_down() {
+    let _ = super::send_message(DISPATCH, vec![FOCUSMONITOR, "d"]);
 }
 
 pub fn focus_by_id(id: &str) {
