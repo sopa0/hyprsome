@@ -10,7 +10,7 @@ use hyprland_ipc::{client, monitor, option, workspace};
 #[derive(Parser)]
 #[command(name = "hyprsome")]
 #[command(author = "sopa0")]
-#[command(version = "0.1.9")]
+#[command(version = "0.1.10")]
 #[command(about = "Makes hyprland workspaces behave like awesome", long_about = None)]
 struct Cli {
     #[command(subcommand)]
@@ -22,7 +22,7 @@ enum Commands {
     Focus { direction: Directions },
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
-    MoveFocus { workspace_number: u64 },
+    Movefocus { workspace_number: u64 },
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -322,7 +322,7 @@ fn main() {
         Commands::Move { workspace_number } => {
             send_to_workspace(workspace_number);
         }
-        Commands::MoveFocus { workspace_number } => {
+        Commands::Movefocus { workspace_number } => {
             movefocus(workspace_number);
         }
     }
