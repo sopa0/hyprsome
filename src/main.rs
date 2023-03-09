@@ -10,7 +10,7 @@ use hyprland_ipc::{client, monitor, option, workspace};
 #[derive(Parser)]
 #[command(name = "hyprsome")]
 #[command(author = "sopa0")]
-#[command(version = "0.1.8")]
+#[command(version = "0.1.9")]
 #[command(about = "Makes hyprland workspaces behave like awesome", long_about = None)]
 struct Cli {
     #[command(subcommand)]
@@ -22,6 +22,7 @@ enum Commands {
     Focus { direction: Directions },
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
+    MoveFocus { workspace_number: u64 },
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -72,6 +73,7 @@ pub fn get_current_monitor() -> Monitor {
         .unwrap();
 }
 
+//TODO: refactor this nonsense
 pub fn select_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
     match mon.id {
@@ -86,12 +88,28 @@ pub fn select_workspace(workspace_number: &u64) {
     }
 }
 
+//TODO: refactor this nonsense
 pub fn send_to_workspace(workspace_number: &u64) {
     let mon = get_current_monitor();
     match mon.id {
         0 => workspace::move_to(workspace_number),
         _ => {
             workspace::move_to(
+                &format!("{}{}", mon.id, workspace_number)
+                    .parse::<u64>()
+                    .unwrap(),
+            );
+        }
+    }
+}
+
+//TODO: refactor this nonsense
+pub fn movefocus(workspace_number: &u64) {
+    let mon = get_current_monitor();
+    match mon.id {
+        0 => workspace::move_focus(workspace_number),
+        _ => {
+            workspace::move_focus(
                 &format!("{}{}", mon.id, workspace_number)
                     .parse::<u64>()
                     .unwrap(),
@@ -303,6 +321,9 @@ fn main() {
         }
         Commands::Move { workspace_number } => {
             send_to_workspace(workspace_number);
+        }
+        Commands::MoveFocus { workspace_number } => {
+            movefocus(workspace_number);
         }
     }
 }
