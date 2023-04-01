@@ -23,7 +23,7 @@ fn send_message(action: &str, args: Vec<&str>) -> String {
         Ok(stream) => stream,
     };
 
-    let mut message = format!("j/{}", action).to_owned();
+    let mut message = format!("j/{}", action);
     args.into_iter()
         .for_each(|a| message.push_str(&format!(" {}", a)));
 
@@ -33,5 +33,5 @@ fn send_message(action: &str, args: Vec<&str>) -> String {
 
     // TODO: stop being stinky and manage errors
     let _ = stream.read_to_string(&mut response);
-    return response;
+    response
 }

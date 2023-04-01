@@ -9,17 +9,13 @@ pub struct ActiveWorkspace {
     pub name: String,
 }
 
-pub fn get_by_id(id: u8) -> Monitor {
-    let monitors = get();
-    let monitor = monitors.into_iter().find(|m| m.id == id).unwrap();
-
-    return monitor;
+pub fn get_by_id(id: i16) -> Monitor {
+    let mut monitors = get();
+    monitors.find(|m| m.id == id).unwrap()
 }
 
 pub fn get() -> Monitors {
-    let monitors = Monitors::get().unwrap();
-
-    return monitors;
+    Monitors::get().unwrap()
 }
 
 pub fn focus_left() {
