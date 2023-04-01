@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 const GETOPTIONS: &str = "getoptions";
 const GENERAL_GAPS_OUT: &str = "general:gaps_out";
@@ -15,6 +15,5 @@ pub fn get_gaps() -> i16 {
     let response = super::send_message(GETOPTIONS, vec![GENERAL_GAPS_OUT]);
     let gap_option: HyprlandOption = serde_json::from_str(&response).unwrap();
 
-    return gap_option.int as i16;
+    gap_option.int as i16
 }
-

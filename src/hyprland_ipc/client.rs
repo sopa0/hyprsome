@@ -1,18 +1,15 @@
 use hyprland::{
     data::{Client, Clients},
-    shared::{HyprDataActiveOptional, HyprData}, dispatch::{Dispatch, DispatchType, Direction},
+    dispatch::{Direction, Dispatch, DispatchType},
+    shared::{HyprData, HyprDataActiveOptional},
 };
 
 pub fn get_active() -> Option<Client> {
-    let client =  Client::get_active().unwrap();
-
-    return client;
+    Client::get_active().unwrap()
 }
 
 pub fn get() -> Clients {
-    let clients = Clients::get().unwrap();
-
-    return clients;
+    Clients::get().unwrap()
 }
 
 pub fn focus_by_direction(direction: Direction) {
