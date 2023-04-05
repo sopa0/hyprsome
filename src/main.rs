@@ -3,7 +3,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 mod hyprland_ipc;
 use hyprland::{
     data::{Client, Monitor, Transforms},
-    dispatch::Direction
+    dispatch::Direction,
 };
 use hyprland_ipc::{client, monitor, option, workspace};
 
@@ -40,7 +40,7 @@ pub trait MonitorDimensions {
 
 impl MonitorDimensions for Monitor {
     fn real_width(&self) -> f32 {
-        return match self.transform {
+        match self.transform {
             Transforms::Normal
             | Transforms::Normal180
             | Transforms::Flipped
@@ -49,11 +49,11 @@ impl MonitorDimensions for Monitor {
                 self.height as f32 / self.scale
             }
             _ => self.width as f32,
-        } as f32;
+        }
     }
 
     fn real_height(&self) -> f32 {
-        return match self.transform {
+        match self.transform {
             Transforms::Normal
             | Transforms::Flipped
             | Transforms::Normal180
@@ -62,15 +62,12 @@ impl MonitorDimensions for Monitor {
                 self.width as f32 / self.scale
             }
             _ => self.height as f32,
-        } as f32;
+        }
     }
 }
 
 pub fn get_current_monitor() -> Monitor {
-    return monitor::get()
-        .into_iter()
-        .find(|m| m.focused == true)
-        .unwrap();
+    monitor::get().find(|m| m.focused).unwrap()
 }
 
 //TODO: refactor this nonsense
@@ -118,14 +115,14 @@ pub fn movefocus(workspace_number: &u64) {
     }
 }
 
-pub fn get_leftmost_client_for_monitor(mon_id: u8) -> Client {
+pub fn get_leftmost_client_for_monitor(mon_id: i16) -> Client {
     let clients = client::get();
 
-    return clients
+    clients
         .into_iter()
         .filter(|c| c.monitor == mon_id)
         .min_by_key(|c| c.at.0)
-        .unwrap();
+        .unwrap()
 }
 
 pub fn focus_left(aw: Client) {
@@ -159,8 +156,6 @@ pub fn focus_right(aw: Client) {
     }
 
     client::focus_by_direction(Direction::Right);
-
-    return;
 }
 
 pub fn focus_up(aw: Client) {
@@ -178,8 +173,6 @@ pub fn focus_up(aw: Client) {
     }
 
     client::focus_by_direction(Direction::Up);
-
-    return;
 }
 
 pub fn focus_down(aw: Client) {
@@ -197,8 +190,6 @@ pub fn focus_down(aw: Client) {
     }
 
     client::focus_by_direction(Direction::Down);
-
-    return;
 }
 
 pub fn is_leftmost_client(aw: &Client, mon: &Monitor) -> bool {
@@ -208,7 +199,7 @@ pub fn is_leftmost_client(aw: &Client, mon: &Monitor) -> bool {
         return true;
     }
 
-    return false;
+    false
 }
 
 pub fn is_rightmost_client(aw: &Client, mon: &Monitor) -> bool {
@@ -218,7 +209,7 @@ pub fn is_rightmost_client(aw: &Client, mon: &Monitor) -> bool {
         return true;
     }
 
-    return false;
+    false
 }
 
 pub fn is_top_client(aw: &Client, mon: &Monitor) -> bool {
@@ -228,7 +219,7 @@ pub fn is_top_client(aw: &Client, mon: &Monitor) -> bool {
         return true;
     }
 
-    return false;
+    false
 }
 
 pub fn is_bottom_client(aw: &Client, mon: &Monitor) -> bool {
@@ -240,7 +231,7 @@ pub fn is_bottom_client(aw: &Client, mon: &Monitor) -> bool {
         return true;
     }
 
-    return false;
+    false
 }
 
 pub fn is_rightmost_monitor(mon: &Monitor) -> bool {
@@ -249,7 +240,7 @@ pub fn is_rightmost_monitor(mon: &Monitor) -> bool {
     if max.x == mon.x {
         return true;
     }
-    return false;
+    false
 }
 
 pub fn is_leftmost_monitor(mon: &Monitor) -> bool {
@@ -258,7 +249,7 @@ pub fn is_leftmost_monitor(mon: &Monitor) -> bool {
     if min.x == mon.x {
         return true;
     }
-    return false;
+    false
 }
 
 pub fn is_top_monitor(mon: &Monitor) -> bool {
@@ -267,7 +258,7 @@ pub fn is_top_monitor(mon: &Monitor) -> bool {
     if min.y == mon.y {
         return true;
     }
-    return false;
+    false
 }
 
 pub fn is_bottom_monitor(mon: &Monitor) -> bool {
@@ -276,7 +267,7 @@ pub fn is_bottom_monitor(mon: &Monitor) -> bool {
     if max.y == mon.y {
         return true;
     }
-    return false;
+    false
 }
 
 fn main() {
