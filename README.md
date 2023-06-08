@@ -36,17 +36,17 @@ Then just bind workspaces by prefixing numbers by the id of the monitor they're 
 Here, HDMI-A-1's id is 1, so I bind workspaces from 11 to 19 to it.
 
 ```
-  wsbind=1,DP-1
-  wsbind=2,DP-1
-  wsbind=3,DP-1
-  wsbind=4,DP-1
-  wsbind=5,DP-1
+  workspace=1,monitor:DP-1
+  workspace=2,monitor:DP-1
+  workspace=3,monitor:DP-1
+  workspace=4,monitor:DP-1
+  workspace=5,monitor:DP-1
 
-  wsbind=11,HDMI-A-1
-  wsbind=12,HDMI-A-1
-  wsbind=13,HDMI-A-1
-  wsbind=14,HDMI-A-1
-  wsbind=15,HDMI-A-1
+  workspace=11,monitor:HDMI-A-1
+  workspace=12,monitor:HDMI-A-1
+  workspace=13,monitor:HDMI-A-1
+  workspace=14,monitor:HDMI-A-1
+  workspace=15,monitor:HDMI-A-1
 ```
 
 Then it's just a matter of making sure your regular workspace keybinds call hyprsome.
