@@ -22,6 +22,7 @@ enum Commands {
     Focus { direction: Directions },
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
+    Tagmon { direction: Directions },
     Movefocus { workspace_number: u64 },
 }
 
@@ -192,7 +193,51 @@ pub fn focus_down(aw: Client) {
     client::focus_by_direction(Direction::Down);
 }
 
-pub fn is_leftmost_client(aw: &Client, mon: &Monitor) -> bool {
+pub fn tagmon_right(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
+
+    if is_rightmost_monitor(&mon) {
+        return;
+    }
+
+    monitor::tagmon_to(aw.monitor + 1);
+    return;
+}
+
+pub fn tagmon_left(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
+
+    if is_leftmost_monitor(&mon) {
+        return;
+    }
+
+    monitor::tagmon_to(aw.monitor - 1);
+    return;
+}
+
+pub fn tagmon_up(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
+
+    if is_top_monitor(&mon) {
+        return;
+    }
+
+    monitor::tagmon_to(aw.monitor + 1);
+    return;
+}
+
+pub fn tagmon_down(aw: client::Client) {
+    let mon = monitor::get_by_id(aw.monitor);
+
+    if is_bottom_monitor(&mon) {
+        return;
+    }
+
+    monitor::tagmon_to(aw.monitor - 1);
+    return;
+}
+
+pub fn is_leftmost_client(aw: &client::Client, mon: &monitor::Monitor) -> bool {
     let gaps = option::get_gaps();
 
     if (aw.at.0 - gaps) as i32 == mon.x {
@@ -313,6 +358,41 @@ fn main() {
         Commands::Move { workspace_number } => {
             send_to_workspace(workspace_number);
         }
+        Commands::Tagmon { direction } => match direction {
+            Directions::L => {
+                let aw_res = client::get_active();
+
+                match aw_res {
+                    Ok(aw) => tagmon_left(aw),
+                    Err(_e) => monitor::focus_left(),
+                };
+            }
+            Directions::R => {
+                let aw_res = client::get_active();
+
+                match aw_res {
+                    Ok(aw) => tagmon_right(aw),
+                    Err(_e) => monitor::focus_right(),
+                };
+            }
+            Directions::U => {
+                let aw_res = client::get_active();
+
+                match aw_res {
+                    Ok(aw) => tagmon_up(aw),
+                    Err(_e) => monitor::focus_up(),
+                };
+            }
+            Directions::D => {
+                let aw_res = client::get_active();
+
+                match aw_res {
+                    Ok(aw) => tagmon_down(aw),
+                    Err(_e) => monitor::focus_down(),
+                };
+            }
+        },
+
         Commands::Movefocus { workspace_number } => {
             movefocus(workspace_number);
         }
