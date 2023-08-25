@@ -80,7 +80,7 @@ pub fn bind_workspaces() {
             let workspace_config = format!("{workspace_number},monitor:{name}");
             Keyword::set("workspace", OptionValue::String(workspace_config)).unwrap();
         }
-        let _ = Dispatch::call(DispatchType::MoveWorkspaceToMonitor(WorkspaceIdentifier::Id(monitor_id as i32), MonitorIdentifier::Id((monitor_id / 10) as u8)));
+        let _ = Dispatch::call(DispatchType::MoveWorkspaceToMonitor(WorkspaceIdentifier::Id((monitor_id + 1) as i32), MonitorIdentifier::Id((monitor_id / 10) as u8)));
     })
 }
 
