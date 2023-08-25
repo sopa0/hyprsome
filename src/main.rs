@@ -77,7 +77,7 @@ pub fn bind_workspaces() {
         let name = &mon.name;
         for i in 1..=9 {
             let workspace_number = i + id_number;
-            let workspace_config = format!("{workspace_number},monitor:{name}");
+            let workspace_config = format!("{workspace_number},monitor:{name}{}", if i == 1 {",default:true"} else {""});
             Keyword::set("workspace", OptionValue::String(workspace_config)).unwrap();
         }
     })
