@@ -77,7 +77,7 @@ pub fn bind_workspaces() {
         let name = mon.name;
         for i in 1..=9 {
             let workspace_number = i + (monitor_id * 10);
-            let workspace_config = format!("{workspace_number},monitor:{name}{}", if i == 1 {",default:true"} else {""});
+            let workspace_config = format!("{workspace_number},monitor:{name},default:{}", i == 1);
             Keyword::set("workspace", OptionValue::String(workspace_config)).unwrap();
         }
         let _ = Dispatch::call(DispatchType::MoveWorkspaceToMonitor(WorkspaceIdentifier::Id((monitor_id + 1) as i32), MonitorIdentifier::Id((monitor_id / 10) as u8)));
