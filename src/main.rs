@@ -3,7 +3,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 mod hyprland_ipc;
 use hyprland::{
     data::{Client, Monitor, Transforms},
-    dispatch::Direction,
+    dispatch::Direction, keyword::{Keyword, OptionValue},
 };
 use hyprland_ipc::{client, monitor, option, workspace};
 
@@ -23,6 +23,7 @@ enum Commands {
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
     Movefocus { workspace_number: u64 },
+    Bindworkspaces,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -68,6 +69,18 @@ impl MonitorDimensions for Monitor {
 
 pub fn get_current_monitor() -> Monitor {
     monitor::get().find(|m| m.focused).unwrap()
+}
+
+pub fn bind_workspaces() {
+    monitor::get().for_each(|mon| {
+        let id_number = &mon.id * 10;
+        let name = &mon.name;
+        for i in 1..=9 {
+            let workspace_number = i + id_number;
+            let workspace_config = format!("{workspace_number},monitor:{name}");
+            Keyword::set("workspace", OptionValue::String(workspace_config)).unwrap();
+        }
+    })
 }
 
 //TODO: refactor this nonsense
@@ -316,5 +329,8 @@ fn main() {
         Commands::Movefocus { workspace_number } => {
             movefocus(workspace_number);
         }
+        Commands::Bindworkspaces => {
+            bind_workspaces();
+        },
     }
 }
