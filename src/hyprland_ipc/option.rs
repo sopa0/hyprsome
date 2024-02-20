@@ -11,9 +11,9 @@ pub struct HyprlandOption {
     pub str: String,
 }
 
-pub fn get_gaps() -> i16 {
+pub fn get_gaps() -> i128 {
     let response = super::send_message(GETOPTIONS, vec![GENERAL_GAPS_OUT]);
     let gap_option: HyprlandOption = serde_json::from_str(&response).unwrap();
 
-    gap_option.int as i16
+    gap_option.int as i128
 }

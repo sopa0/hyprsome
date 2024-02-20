@@ -6,12 +6,16 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        craneLib = crane.lib.${system};
-      in
-    {
+  outputs = {
+    self,
+    nixpkgs,
+    crane,
+    flake-utils,
+    ...
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      craneLib = crane.lib.${system};
+    in {
       packages.default = craneLib.buildPackage {
         src = craneLib.cleanCargoSource (craneLib.path ./.);
         # Add extra inputs here or any other derivation settings
