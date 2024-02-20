@@ -70,7 +70,3 @@ bind=SUPERSHIFT,5,exec,hyprsome move 5
 This is alpha software and my first program in Rust, bugs are bound to happen but nothing that will break your system.
 
 Some features are most likely missing.
-
-You can only have 9 workspaces per monitor as of now.
-
-I haven't worked on supporting monitor hot-plug at all. It may work but it's unlikely.

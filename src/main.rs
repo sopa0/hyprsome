@@ -6,11 +6,20 @@ use hyprland::{
     dispatch::Direction,
 };
 use hyprland_ipc::{client, monitor, option, workspace};
+use xdg::BaseDirectories;
+use std::env;
+use std::fs;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Config {
+    workspaces_per_monitor: Option<u64>,
+}
 
 #[derive(Parser)]
 #[command(name = "hyprsome")]
 #[command(author = "sopa0")]
-#[command(version = "0.1.11")]
+#[command(version = "0.1.12")]
 #[command(about = "Makes hyprland workspaces behave like awesome", long_about = None)]
 struct Cli {
     #[command(subcommand)]
@@ -70,14 +79,16 @@ pub fn get_current_monitor() -> Monitor {
     monitor::get().find(|m| m.focused).unwrap()
 }
 
-//TODO: refactor this nonsense
-pub fn select_workspace(workspace_number: &u64) {
+pub fn select_workspace(workspace_number: &u64, workspaces_per_monitor: u64) {
     let mon = get_current_monitor();
+    let mon_id: u64 = mon.id.try_into().unwrap();
+    let workspace_number_fixed = if *workspace_number != 0 { *workspace_number } else { 10 };
+    let global_workspace_number = (mon_id*workspaces_per_monitor) + workspace_number_fixed;
     match mon.id {
-        0 => workspace::focus(workspace_number),
+        0 => workspace::focus(&global_workspace_number),
         _ => {
             workspace::focus(
-                &format!("{}{}", mon.id, workspace_number)
+                &format!("{}", global_workspace_number)
                     .parse::<u64>()
                     .unwrap(),
             );
@@ -85,14 +96,16 @@ pub fn select_workspace(workspace_number: &u64) {
     }
 }
 
-//TODO: refactor this nonsense
-pub fn send_to_workspace(workspace_number: &u64) {
+pub fn send_to_workspace(workspace_number: &u64, workspaces_per_monitor: u64) {
     let mon = get_current_monitor();
+    let mon_id: u64 = mon.id.try_into().unwrap();
+    let workspace_number_fixed = if *workspace_number != 0 { *workspace_number } else { 10 };
+    let global_workspace_number = (mon_id*workspaces_per_monitor) + workspace_number_fixed;
     match mon.id {
-        0 => workspace::move_to(workspace_number),
+        0 => workspace::move_to(&global_workspace_number),
         _ => {
             workspace::move_to(
-                &format!("{}{}", mon.id, workspace_number)
+                &format!("{}", global_workspace_number)
                     .parse::<u64>()
                     .unwrap(),
             );
@@ -100,14 +113,16 @@ pub fn send_to_workspace(workspace_number: &u64) {
     }
 }
 
-//TODO: refactor this nonsense
-pub fn movefocus(workspace_number: &u64) {
+pub fn movefocus(workspace_number: &u64, workspaces_per_monitor: u64) {
     let mon = get_current_monitor();
+    let mon_id: u64 = mon.id.try_into().unwrap();
+    let workspace_number_fixed = if *workspace_number != 0 { *workspace_number } else { 10 };
+    let global_workspace_number = (mon_id*workspaces_per_monitor) + workspace_number_fixed;
     match mon.id {
-        0 => workspace::move_focus(workspace_number),
+        0 => workspace::move_focus(&global_workspace_number),
         _ => {
             workspace::move_focus(
-                &format!("{}{}", mon.id, workspace_number)
+                &format!("{}", global_workspace_number)
                     .parse::<u64>()
                     .unwrap(),
             );
@@ -115,7 +130,7 @@ pub fn movefocus(workspace_number: &u64) {
     }
 }
 
-pub fn get_leftmost_client_for_monitor(mon_id: i16) -> Client {
+pub fn get_leftmost_client_for_monitor(mon_id: i128) -> Client {
     let clients = client::get();
 
     clients
@@ -193,7 +208,7 @@ pub fn focus_down(aw: Client) {
 }
 
 pub fn is_leftmost_client(aw: &Client, mon: &Monitor) -> bool {
-    let gaps = option::get_gaps();
+    let gaps: i16 = option::get_gaps().try_into().unwrap();
 
     if (aw.at.0 - gaps) as i32 == mon.x {
         return true;
@@ -272,6 +287,26 @@ pub fn is_bottom_monitor(mon: &Monitor) -> bool {
 
 fn main() {
     let cli = Cli::parse();
+    let xdg_dirs = xdg::BaseDirectories::with_prefix("hyprsome").unwrap(); 
+    let config_path = xdg_dirs.find_config_file("config.toml");
+    let workspaces_per_monitor: u64;
+    match config_path {
+        None => {
+            workspaces_per_monitor = 10;
+        },
+        Some(path) => {
+            let config_string = fs::read_to_string(path);
+            match config_string {
+                Err(_) => {
+                    workspaces_per_monitor = 10;
+                },
+                Ok(config_content) => {
+                    let config: Config = toml::from_str(config_content.as_str()).expect("");
+                    workspaces_per_monitor = config.workspaces_per_monitor.expect("If you have a config file, please define the number of workspaces per monitor.");
+                }
+            }
+        }
+    }
     match &cli.command {
         Commands::Focus { direction } => match direction {
             Directions::L => {
@@ -308,13 +343,13 @@ fn main() {
             }
         },
         Commands::Workspace { workspace_number } => {
-            select_workspace(workspace_number);
+            select_workspace(workspace_number, workspaces_per_monitor);
         }
         Commands::Move { workspace_number } => {
-            send_to_workspace(workspace_number);
+            send_to_workspace(workspace_number, workspaces_per_monitor);
         }
         Commands::Movefocus { workspace_number } => {
-            movefocus(workspace_number);
+            movefocus(workspace_number, workspaces_per_monitor);
         }
     }
 }
