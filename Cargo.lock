@@ -432,6 +432,7 @@ dependencies = [
  "clap",
  "hyprland",
  "ipc-rpc",
+ "once_cell",
  "schemars",
  "serde",
  "serde_json",
