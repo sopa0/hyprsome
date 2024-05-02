@@ -67,7 +67,7 @@ impl MonitorDimensions for Monitor {
 }
 
 pub fn get_current_monitor() -> Monitor {
-    monitor::get().find(|m| m.focused).unwrap()
+    monitor::get().iter().find(|m| m.focused).unwrap().clone()
 }
 
 //TODO: refactor this nonsense
