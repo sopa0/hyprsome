@@ -10,8 +10,8 @@ pub struct ActiveWorkspace {
 }
 
 pub fn get_by_id(id: i128) -> Monitor {
-    let mut monitors = get();
-    monitors.find(|m| m.id == id).unwrap()
+    let monitors = get();
+    monitors.iter().find(|m| m.id == id).unwrap().clone()
 }
 
 pub fn get() -> Monitors {
