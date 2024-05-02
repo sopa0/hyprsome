@@ -10,7 +10,7 @@ use hyprland_ipc::{client, monitor, option, workspace};
 #[derive(Parser)]
 #[command(name = "hyprsome")]
 #[command(author = "sopa0")]
-#[command(version = "0.1.11")]
+#[command(version = "0.1.12")]
 #[command(about = "Makes hyprland workspaces behave like awesome", long_about = None)]
 struct Cli {
     #[command(subcommand)]
