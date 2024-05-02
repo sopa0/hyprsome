@@ -115,7 +115,7 @@ pub fn movefocus(workspace_number: &u64) {
     }
 }
 
-pub fn get_leftmost_client_for_monitor(mon_id: i16) -> Client {
+pub fn get_leftmost_client_for_monitor(mon_id: i128) -> Client {
     let clients = client::get();
 
     clients
