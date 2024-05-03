@@ -3,12 +3,12 @@ pub mod monitor;
 pub mod option;
 pub mod workspace;
 
+use hyprland::shared::HyprError;
+use once_cell::sync::Lazy;
 use std::env::{var, VarError};
 use std::io::prelude::*;
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
-use once_cell::sync::Lazy;
-use hyprland::shared::HyprError;
 
 extern crate serde_json;
 
@@ -62,7 +62,7 @@ fn init_socket_path(socket_type: SocketType) -> hyprland::Result<PathBuf> {
             panic!("Corrupted Hyprland socket variable: Invalid unicode!")
         }
     };
-    
+
     let mut p: PathBuf;
     fn var_path(instance: String) -> Option<PathBuf> {
         if let Ok(runtime_path) = var("XDG_RUNTIME_DIR") {
@@ -96,13 +96,12 @@ fn init_socket_path(socket_type: SocketType) -> hyprland::Result<PathBuf> {
     } else {
         panic!("No xdg runtime path found!")
     }
-    
+
     p.push(socket_type.socket_name());
     Ok(p)
 }
 
 fn send_message(action: &str, args: Vec<&str>) -> String {
-
     let p = get_socket_path(SocketType::Command);
     let socket_path = match p {
         Ok(p) => p,
