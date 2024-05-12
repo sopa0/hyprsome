@@ -9,9 +9,9 @@ pub struct ActiveWorkspace {
     pub name: String,
 }
 
-pub fn get_by_id(id: i16) -> Monitor {
-    let mut monitors = get();
-    monitors.find(|m| m.id == id).unwrap()
+pub fn get_by_id(id: i128) -> Monitor {
+    let monitors = get();
+    monitors.iter().find(|m| m.id == id).unwrap().clone()
 }
 
 pub fn get() -> Monitors {
