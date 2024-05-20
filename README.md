@@ -74,3 +74,8 @@ Some features are most likely missing.
 You can only have 9 workspaces per monitor as of now.
 
 I haven't worked on supporting monitor hot-plug at all. It may work but it's unlikely.
+
+
+# Alternatives
+
+https://github.com/Duckonaut/split-monitor-workspaces leverages the plugin system, is more feature rich and seems better maintained
