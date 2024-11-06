@@ -22,7 +22,9 @@ enum Commands {
     Focus { direction: Directions },
     Workspace { workspace_number: u64 },
     Move { workspace_number: u64 },
+    MoveToMonitor { monitor_number: u64 },
     Movefocus { workspace_number: u64 },
+    MovefocusToMonitor { monitor_number: u64 },
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -100,6 +102,32 @@ pub fn send_to_workspace(workspace_number: &u64) {
     }
 }
 
+pub fn send_to_monitor(monitor_number: &u64) {
+    let mon = get_current_monitor();
+
+    match monitor::get().iter().max_by(|m1, m2| m1.id.cmp(&m2.id)) {
+        Some(max) => {
+            if *monitor_number as i128 > max.id {
+                return;
+            }
+        },
+        None => return,
+    };
+
+    let target_mon = monitor::get_by_id(*monitor_number as i128);
+    let target_workspace_number = target_mon.active_workspace.id;
+
+    if mon.id == target_mon.id {
+        {}
+    } else {
+        workspace::move_to(
+            &format!("{}", target_workspace_number)
+                .parse::<u64>()
+                .unwrap(),
+        );
+    }
+}
+
 //TODO: refactor this nonsense
 pub fn movefocus(workspace_number: &u64) {
     let mon = get_current_monitor();
@@ -112,6 +140,32 @@ pub fn movefocus(workspace_number: &u64) {
                     .unwrap(),
             );
         }
+    }
+}
+
+pub fn movefocus_to_monitor(monitor_number: &u64) {
+    let mon = get_current_monitor();
+
+    match monitor::get().iter().max_by(|m1, m2| m1.id.cmp(&m2.id)) {
+        Some(max) => {
+            if *monitor_number as i128 > max.id {
+                return;
+            }
+        },
+        None => return,
+    };
+
+    let target_mon = monitor::get_by_id(*monitor_number as i128);
+    let target_workspace_number = target_mon.active_workspace.id;
+
+    if mon.id == target_mon.id {
+        {}
+    } else {
+        workspace::focus(
+            &format!("{}", target_workspace_number)
+                .parse::<u64>()
+                .unwrap(),
+        );
     }
 }
 
@@ -313,8 +367,14 @@ fn main() {
         Commands::Move { workspace_number } => {
             send_to_workspace(workspace_number);
         }
+        Commands::MoveToMonitor { monitor_number } => {
+            send_to_monitor(monitor_number);
+        }
         Commands::Movefocus { workspace_number } => {
             movefocus(workspace_number);
+        }
+        Commands::MovefocusToMonitor { monitor_number } => {
+            movefocus_to_monitor(monitor_number);
         }
     }
 }
