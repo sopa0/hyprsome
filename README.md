@@ -1,3 +1,7 @@
+# THIS REPO IS ARCHIVED
+Please use this instead: https://github.com/Duckonaut/split-monitor-workspaces
+
+
 # Hyprsome
 Hyprsome is a binary that interacts with Hyprland's Unix socket to make workspaces behave similarly to AwesomeWM in a multi-monitor setup.
 
